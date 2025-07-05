@@ -1,0 +1,37 @@
+?start: statement+
+
+?statement: assignment
+          | func_def
+          | mostrar_stmt
+          | cond_stmt
+          | loop_stmt
+          | "fin"
+          | expr
+
+assignment: CNAME "=" expr
+func_def: "funcion" CNAME "(" args ")" "=" expr
+args: CNAME ("," CNAME)*
+
+mostrar_stmt: "mostrar" "(" expr ")"
+cond_stmt: "si" expr "entonces" | "sino"
+loop_stmt: "para" CNAME "en" NUMBER ".." NUMBER "hacer"
+
+?expr: expr "+" term   -> add
+     | expr "-" term   -> sub
+     | term
+
+?term: term "*" factor -> mul
+     | term "/" factor -> div
+     | factor
+
+?factor: CNAME "(" args_expr ")" -> func_call
+       | CNAME
+       | NUMBER
+       | "(" expr ")"
+
+args_expr: expr ("," expr)*
+
+%import common.CNAME
+%import common.NUMBER
+%import common.WS
+%ignore WS

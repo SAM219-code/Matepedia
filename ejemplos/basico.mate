@@ -1,0 +1,9 @@
+x = simbolo()
+funcion f(x) = x^2 + 2*x + 1
+mostrar(f(3))
+df = derivar(f, x)
+mostrar(df)
+area = integrar(f, x, 0, 2)
+mostrar(area)
+lim = limite(f(x), x, 0)
+mostrar(lim)
