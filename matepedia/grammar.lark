@@ -1,37 +1,50 @@
-?start: statement+
+?start: statement
 
 ?statement: assignment
           | func_def
           | mostrar_stmt
           | cond_stmt
           | loop_stmt
-          | "fin"
-          | expr
+          | expr_stmt
+
+expr_stmt: expr
 
 assignment: CNAME "=" expr
+
 func_def: "funcion" CNAME "(" args ")" "=" expr
-args: CNAME ("," CNAME)*
+args: (CNAME ("," CNAME)*)?
 
 mostrar_stmt: "mostrar" "(" expr ")"
-cond_stmt: "si" expr "entonces" | "sino"
+
+cond_stmt: "si" expr "entonces"
 loop_stmt: "para" CNAME "en" NUMBER ".." NUMBER "hacer"
 
-?expr: expr "+" term   -> add
-     | expr "-" term   -> sub
-     | term
+?expr: term add_sub_op_chain*
+add_sub_op_chain: (PLUS | MINUS) term
 
-?term: term "*" factor -> mul
-     | term "/" factor -> div
-     | factor
+?term: power mul_div_op_chain*
+mul_div_op_chain: (STAR | SLASH) power
 
-?factor: CNAME "(" args_expr ")" -> func_call
-       | CNAME
-       | NUMBER
-       | "(" expr ")"
+?power: atom HAT atom -> pow
+       | atom
 
-args_expr: expr ("," expr)*
+?atom: CNAME
+     | NUMBER
+     | func_call
+     | "(" expr ")"
+
+func_call: CNAME "(" args_expr ")"
+args_expr: (expr ("," expr)*)?
 
 %import common.CNAME
 %import common.NUMBER
 %import common.WS
 %ignore WS
+
+PLUS: "+"
+MINUS: "-"
+STAR: "*"
+SLASH: "/"
+HAT: "^"
+LPAR: "("
+RPAR: ")"
